@@ -402,8 +402,42 @@ header > .login-form.phase-3 > .phaseless-content
       </div>
     </div>
     <script>
-
 (async () => {
+  const contract = await new Promise((accept, reject) => {
+    window.addEventListener('load', async () => {
+      // Modern dapp browsers...
+      if (window.ethereum) {
+          window.web3 = new window.top.Web3(ethereum);
+          try {
+              // Request account access if needed
+              await window.ethereum.enable();
+              // Acccounts now exposed
+              // web3.eth.sendTransaction({/* ... */});
+          } catch (error) {
+              // User denied account access...
+          }
+      }
+      // Legacy dapp browsers...
+      else if (window.web3) {
+          window.web3 = new window.Web3(window.web3.currentProvider);
+          // Acccounts always exposed
+          // web3.eth.sendTransaction({/* ... */});
+      }
+      // Non-dapp browsers...
+      else {
+          console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+      }
+
+      const ress = await Promise.all([
+        fetch('abi.json'),
+        fetch('address.json'),
+      ]);
+      const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+      const contract = web3.eth.contract(jsonInterface).at(address);
+      accept(contract);
+    });
+  });
+
   const res = await fetch(`https://content.exokit.org/users/avaer`);
   const root = await res.json();
 
@@ -415,7 +449,7 @@ header > .login-form.phase-3 > .phaseless-content
 
     if (node.hash) {
       files.push(keypath);
-      hashes.push(node.hash);
+      hashes.push('0x' + node.hash);
     }
     if (node.children) {
       for (let i = 0; i < node.children.length; i++) {
@@ -424,13 +458,26 @@ header > .login-form.phase-3 > .phaseless-content
     }
   };
   _recurse(root);
+  const ids = await Promise.all(hashes.map(hash => new Promise((accept, reject) => {
+    // const hash = '0x' + filename.match(/([^\/]*)$/)[1];
+    contract.getId(hash, (err, id) => {
+      if (!err) {
+        accept(id.toNumber());
+      } else {
+        reject(err);
+      }
+    });
+  })));
 
-  document.getElementById('iframe-wrapper').innerHTML = files.map((file, i) =>
-    `<a href="https://viewer.exokit.org/${hashes[i]}" class=a-file>
-      <img src="https://content.exokit.org/preview/${hashes[i]}" height=100>
-      <span>${file}</span>
-    </a>`
-  ).join('\n');
+  document.getElementById('iframe-wrapper').innerHTML = files.map((file, i) => {
+    const rawHash = hashes[i].slice(2);
+    const id = ids[i];
+    return `<div class=a-file>
+      <img src="https://content.exokit.org/preview/${rawHash}" height=100>
+      <a href="https://viewer.exokit.org/${rawHash}">${file}</a>
+      <a href="https://rinkeby.opensea.io/assets/${contract.address}/${id}" class="button first last external-link-button">OpenSea</a>
+    </div>`
+  }).join('\n');
 })();
     </script>
   </body>
