@@ -1,34 +1,24 @@
 {
-  "name": "webaverse-server",
+  "name": "exokit-multiplayer",
   "version": "0.0.1",
-  "description": "",
+  "description": "Exokit Multiplayer",
   "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
   "scripts": {
-    "start": "sudo $(which node) $(which forever) start index.js",
-    "stop": "sudo $(which node) $(which forever) stop index.js",
-    "start-browser": "sudo xvfb-run $(which node) index.js",
+    "start": "sudo $(which node) index.js",
+    "build": "cd menu && react-scripts build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/modulesio/webaverse-server.git"
+    "url": "git+https://github.com/exokitxr/multiplayer.git"
   },
-  "author": "",
+  "author": "Avaer Kazmer <a@modules.io>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/modulesio/webaverse-server/issues"
+    "url": "https://github.com/exokitxr/multiplayer/issues"
   },
-  "homepage": "https://github.com/modulesio/webaverse-server#readme",
-  "dependencies": {
-    "aws-sdk": "^2.592.0",
-    "discord.js": "^11.5.1",
-    "http-proxy": "^1.17.0",
-    "lru": "^3.1.0",
-    "mkdirp": "^0.5.1",
-    "puppeteer": "^1.19.0",
-    "sha3": "^2.1.1",
-    "stripe": "^7.9.1",
-    "web3": "^1.2.1",
-    "ws": "^7.1.2"
-  }
+  "homepage": "https://github.com/exokitxr/multiplayer#readme"
 }
