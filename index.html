@@ -467,8 +467,8 @@ header > .login-form.phase-3 > .phaseless-content
   const contract = await new Promise((accept, reject) => {
     window.addEventListener('load', async () => {
 
-      const accessContract = async () => {
-        window.web3 = new window.Web3(window.web3.currentProvider);
+      const accessContract = async (web3) => {
+        window.web3 = web3;
         const ress = await Promise.all([
           fetch('abi.json'),
           fetch('address.json'),
@@ -480,12 +480,11 @@ header > .login-form.phase-3 > .phaseless-content
 
       // Modern dapp browsers...
       if (window.ethereum) {
-          window.web3 = new window.top.Web3(ethereum);
           try {
             // Request account access if needed
             await window.ethereum.enable();
-            accessContract()
-            
+            accessContract(new window.top.Web3(ethereum))
+
           } catch (error) {
               metamaskWarning.style.display = "block";
               console.warn("User denied access to Metamask account.")
@@ -493,7 +492,7 @@ header > .login-form.phase-3 > .phaseless-content
       }
       // Legacy dapp browsers...
       else if (window.web3) {
-          accessContract()
+          accessContract(new window.Web3(window.web3.currentProvider))
       }
       // Non-dapp browsers...
       else {
