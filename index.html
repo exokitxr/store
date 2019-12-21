@@ -85,18 +85,6 @@ li {
   /* padding-left: 20px;
   padding-right: 20px; */
 }
-.iframe-wrapper {
-  position: relative;
-  display: flex;
-  margin-top: 50px;
-  flex: 1;
-  background-color: #FFF;
-}
-.iframe-wrapper xr-engine,
-.iframe-wrapper #editor
-{
-  flex: 1;
-}
 .tabs {
   position: absolute;
   top: 0;
@@ -335,6 +323,35 @@ header > .login-form.phase-3 > .phaseless-content
 .login-form .phaseless-content {
   padding: 0 30px;
 }
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #FFF;
+}
+
+.app-card{
+  width: 400px;
+  height: 250px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.openSeaBtn{
+  margin-top: 40px;
+}
+
+.cardLink{
+  margin-top: 10px;
+}
     </style>
     <!-- <script src="three.js"></script>
     <script src="OrbitControls.js"></script>
@@ -394,7 +411,9 @@ header > .login-form.phase-3 > .phaseless-content
         </form>
       </header>
 
-      <div class=iframe-wrapper id=iframe-wrapper></div>
+      <div class="cardContainer" id="cardContainer">
+
+      </div>
 
       <div class=multibutton>
         <a class="button first last" id="enter-xr-button" style="display: none;">Enter XR</a>
@@ -469,14 +488,20 @@ header > .login-form.phase-3 > .phaseless-content
     });
   })));
 
-  document.getElementById('iframe-wrapper').innerHTML = files.map((file, i) => {
+  document.getElementById('cardContainer').innerHTML = files.map((file, i) => {
     const rawHash = hashes[i].slice(2);
     const id = ids[i];
-    return `<div class=a-file>
-      <img src="https://content.exokit.org/preview/${rawHash}" height=100>
-      <a href="https://viewer.exokit.org/${rawHash}">${file}</a>
-      <a href="https://rinkeby.opensea.io/assets/${contract.address}/${id}" class="button first last external-link-button">OpenSea</a>
-    </div>`
+    return `
+      <div class="app-card">
+        <img src="https://content.exokit.org/preview/${rawHash}" height=100>
+        <div class="cardLink">
+          <a href="https://viewer.exokit.org/${rawHash}">${file}</a>
+        </div>
+        <div class="openSeaBtn">
+          <a href="https://rinkeby.opensea.io/assets/${contract.address}/${id}" class="button first last external-link-button">OpenSea</a>
+        </div>
+      </div>
+    `
   }).join('\n');
 })();
     </script>
