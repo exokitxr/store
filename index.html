@@ -466,20 +466,26 @@ header > .login-form.phase-3 > .phaseless-content
 
   const contract = await new Promise((accept, reject) => {
     window.addEventListener('load', async () => {
+
+      const accessContract = async () => {
+        window.web3 = new window.Web3(window.web3.currentProvider);
+        const ress = await Promise.all([
+          fetch('abi.json'),
+          fetch('address.json'),
+        ]);
+        const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+        const contract = web3.eth.contract(jsonInterface).at(address);
+        accept(contract);
+      }
+
       // Modern dapp browsers...
       if (window.ethereum) {
           window.web3 = new window.top.Web3(ethereum);
           try {
-              // Request account access if needed
-              await window.ethereum.enable();
-              window.web3 = new window.Web3(window.web3.currentProvider);
-              const ress = await Promise.all([
-                fetch('abi.json'),
-                fetch('address.json'),
-              ]);
-              const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-              const contract = web3.eth.contract(jsonInterface).at(address);
-              accept(contract);
+            // Request account access if needed
+            await window.ethereum.enable();
+            accessContract()
+            
           } catch (error) {
               metamaskWarning.style.display = "block";
               console.warn("User denied access to Metamask account.")
@@ -487,14 +493,7 @@ header > .login-form.phase-3 > .phaseless-content
       }
       // Legacy dapp browsers...
       else if (window.web3) {
-          window.web3 = new window.Web3(window.web3.currentProvider);
-          const ress = await Promise.all([
-            fetch('abi.json'),
-            fetch('address.json'),
-          ]);
-          const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-          const contract = web3.eth.contract(jsonInterface).at(address);
-          accept(contract);
+          accessContract()
       }
       // Non-dapp browsers...
       else {
