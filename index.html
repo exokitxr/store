@@ -468,7 +468,6 @@ header > .login-form.phase-3 > .phaseless-content
     window.addEventListener('load', async () => {
       // Modern dapp browsers...
       if (window.ethereum) {
-          metamaskWarning.style.display = "none";
           window.web3 = new window.top.Web3(ethereum);
           try {
               // Request account access if needed
@@ -488,7 +487,6 @@ header > .login-form.phase-3 > .phaseless-content
       }
       // Legacy dapp browsers...
       else if (window.web3) {
-          metamaskWarning.style.display = "none";
           window.web3 = new window.Web3(window.web3.currentProvider);
           const ress = await Promise.all([
             fetch('abi.json'),
