@@ -8,7 +8,7 @@
 }
 body {
   margin: 0;
-  background-color: #000;
+  background-color: white;
   /* color: #F5F5F5; */
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
   font-size: 15px;
@@ -370,6 +370,18 @@ header > .login-form.phase-3 > .phaseless-content
 #logo{
   cursor: pointer;
 }
+
+#metamaskWarning{
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  margin-top: 20vh;
+  display: none;
+}
+
+#metamaskImg{
+  height: 350px;
+}
     </style>
     <!-- <script src="three.js"></script>
     <script src="OrbitControls.js"></script>
@@ -432,9 +444,14 @@ header > .login-form.phase-3 > .phaseless-content
       <div id="nav-popout"> 
 
       </div>
-      
+
       <div class="cardContainer" id="cardContainer">
 
+      </div>
+
+      <div id="metamaskWarning">
+        <img id="metamaskImg" src="./metamask.png">
+        <h3><a href="https://metamask.io/" target="_blank">Metamask Extension</a> required to use Exokit Store.</h3>
       </div>
 
       <div class=multibutton>
@@ -444,38 +461,48 @@ header > .login-form.phase-3 > .phaseless-content
     </div>
     <script>
 (async () => {
+
+  const metamaskWarning = document.getElementById("metamaskWarning");
+
   const contract = await new Promise((accept, reject) => {
     window.addEventListener('load', async () => {
       // Modern dapp browsers...
       if (window.ethereum) {
+          metamaskWarning.style.display = "none";
           window.web3 = new window.top.Web3(ethereum);
           try {
               // Request account access if needed
               await window.ethereum.enable();
-              // Acccounts now exposed
-              // web3.eth.sendTransaction({/* ... */});
+              window.web3 = new window.Web3(window.web3.currentProvider);
+              const ress = await Promise.all([
+                fetch('abi.json'),
+                fetch('address.json'),
+              ]);
+              const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+              const contract = web3.eth.contract(jsonInterface).at(address);
+              accept(contract);
           } catch (error) {
-              // User denied account access...
+              metamaskWarning.style.display = "block";
+              console.warn("User denied access to Metamask account.")
           }
       }
       // Legacy dapp browsers...
       else if (window.web3) {
+          metamaskWarning.style.display = "none";
           window.web3 = new window.Web3(window.web3.currentProvider);
-          // Acccounts always exposed
-          // web3.eth.sendTransaction({/* ... */});
+          const ress = await Promise.all([
+            fetch('abi.json'),
+            fetch('address.json'),
+          ]);
+          const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+          const contract = web3.eth.contract(jsonInterface).at(address);
+          accept(contract);
       }
       // Non-dapp browsers...
       else {
-          console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+        metamaskWarning.style.display = "block";
+        console.warn('Non-Ethereum browser detected. You should consider trying MetaMask!');
       }
-
-      const ress = await Promise.all([
-        fetch('abi.json'),
-        fetch('address.json'),
-      ]);
-      const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-      const contract = web3.eth.contract(jsonInterface).at(address);
-      accept(contract);
     });
   });
 
