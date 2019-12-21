@@ -474,8 +474,7 @@ header > .login-form.phase-3 > .phaseless-content
           fetch('address.json'),
         ]);
         const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-        const contract = web3.eth.contract(jsonInterface).at(address);
-        accept(contract);
+        return web3.eth.contract(jsonInterface).at(address);
       }
 
       // Modern dapp browsers...
@@ -483,7 +482,8 @@ header > .login-form.phase-3 > .phaseless-content
           try {
             // Request account access if needed
             await window.ethereum.enable();
-            accessContract(new window.top.Web3(ethereum))
+            const contract = await accessContract(new window.top.Web3(ethereum))
+            accept(contract);
 
           } catch (error) {
               metamaskWarning.style.display = "block";
@@ -492,7 +492,8 @@ header > .login-form.phase-3 > .phaseless-content
       }
       // Legacy dapp browsers...
       else if (window.web3) {
-          accessContract(new window.Web3(window.web3.currentProvider))
+        const contract = await accessContract(new window.Web3(window.web3.currentProvider))
+        accept(contract);
       }
       // Non-dapp browsers...
       else {
