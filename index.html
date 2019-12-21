@@ -335,6 +335,53 @@ header > .login-form.phase-3 > .phaseless-content
 .login-form .phaseless-content {
   padding: 0 30px;
 }
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #FFF;
+}
+
+.app-card{
+  width: 400px;
+  height: 250px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.openSeaBtn{
+  margin-top: 40px;
+}
+
+.cardLink{
+  margin-top: 10px;
+}
+
+#nav-popout{
+  height: 100%;
+  width: 200px;
+  display: none;
+  background-color: white;
+  margin-top: 50px;
+  padding: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.activeNav{
+  font-weight: 700;
+}
+
+#logo{
+  cursor: pointer;
+}
     </style>
     <!-- <script src="three.js"></script>
     <script src="OrbitControls.js"></script>
@@ -346,8 +393,8 @@ header > .login-form.phase-3 > .phaseless-content
   <body>
     <div class=body>
       <header>
-        <img src="logo.svg" class="icon">
-        <nav class=selected><span>Editor</span></nav>
+        <img src="logo.svg" class="icon" id="logo">
+        <nav class=selected><span>Store</span></nav>
         <!-- <a href="https://docs.exokit.org/"><nav><span class="header-link">Documentation</span></nav></a>
         <a href="https://browser.exokit.org"><nav><span class="header-link">Browser
         </span></nav></a>
@@ -394,7 +441,11 @@ header > .login-form.phase-3 > .phaseless-content
         </form>
       </header>
 
-      <div class=iframe-wrapper id=iframe-wrapper></div>
+      <div id="nav-popout">
+
+      </div>
+
+      <div class="cardContainer" id="cardContainer">
 
       <div class=multibutton>
         <a class="button first last" id="enter-xr-button" style="display: none;">Enter XR</a>
@@ -469,7 +520,53 @@ header > .login-form.phase-3 > .phaseless-content
     });
   })));
 
-  document.getElementById('iframe-wrapper').innerHTML = files.map((file, i) => {
+  const navLinks = [
+    {
+      url: "https://store.exokit.org/",
+      title: "Store",
+      active: window.location.host.split(".")[0] === "store"
+    },
+    {
+      url: "https://avatars.exokit.org/",
+      title: "Avatars",
+      active: window.location.host.split(".")[0] === "avatars"
+    },
+    {
+      url: "https://multiplayer.exokit.org/",
+      title: "Multiplayer",
+      active: window.location.host.split(".")[0] === "multiplayer"
+    },
+    {
+      url: "https://editor.exokit.org/",
+      title: "Editor",
+      active: window.location.host.split(".")[0] === "editor"
+    },
+    {
+      url: "https://exokit.org/",
+      title: "Home",
+      active: window.location.host.split(".")[0] === "exokit"
+    }
+  ]
+
+  document.getElementById('nav-popout').innerHTML = navLinks.map((link, index) => {
+    return `
+      <div>
+        <a href=${link.url} class=${link.active ? "activeNav" : ""}>${link.title}</a>
+      </div>
+    `
+  }).join(`<br/>`)
+
+  document.getElementById("logo").addEventListener("click", () => {
+    const navPopout = document.getElementById('nav-popout');
+    if(navPopout.style.display === "block"){
+      navPopout.style.display = "none";
+    }
+    else{
+      navPopout.style.display = "block";
+    }
+  })
+
+  document.getElementById('cardContainer').innerHTML = files.map((file, i) => {
     const rawHash = hashes[i].slice(2);
     const id = ids[i];
     return `<div class=a-file>
