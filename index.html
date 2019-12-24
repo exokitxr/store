@@ -156,7 +156,10 @@
       // Close nav-popout if user clicks away
       document.getElementById("nav-popout").addEventListener("blur", (e) => {
         const navPopout = document.getElementById('nav-popout');
-        navPopout.style.display = "none"
+        // wait for <a> to fire
+        setTimeout(() => {
+          navPopout.style.display = "none"
+        }, 100)
       })
 
       // Handle logo click, open nav-popout
