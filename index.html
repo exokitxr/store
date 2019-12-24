@@ -1,601 +1,215 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <!-- <link rel="stylesheet" href="browser-shell/dist/xterm.css"> -->
-    <style>
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  background-color: white;
-  /* color: #F5F5F5; */
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
-  font-size: 15px;
-}
-.body {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-header {
-  position: absolute;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 50px;
-  background-color: #FFF;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
-  align-items: center;
-  user-select: none;
-  z-index: 1;
-}
-header .icon {
-  width: 50px;
-  height: 50px;
-  margin: 0 20px;
-}
-header nav {
-  display: flex;
-  height: 100%;
-  padding: 0 10px;
-  letter-spacing: 0.9px;
-  align-items: center;
-  text-transform: uppercase;
-}
-header nav span {
-  display: flex;
-  height: 30px;
-  padding: 10px;
-  border-radius: 4px;
-  align-items: center;
-}
-header nav.selected span {
-  background-color: #5c6bc0;
-  color: #FFF;
-  cursor: default;
-}
-header nav:not(.selected):hover {
-  cursor: pointer;
-}
-header nav:not(.selected):hover span {
-  background-color: #EEE;
-}
-.examples {
-  width: 200px;
-  padding-top: 50px;
-  background-color: #FFF;
-  overflow-y: auto;
-}
-.avatar-models {
-  display: flex;
-  flex-direction: column;
-}
-.a-avatar {
-  cursor: pointer;
-}
-h1, h2, h3, h4, h5, h6, p, .examples > .multibutton {
-  margin: 15px 0;
-  padding: 0 20px;
-  font-weight: inherit;
-}
-li {
-  /* padding-left: 20px;
-  padding-right: 20px; */
-}
-.tabs {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-.tabs .tab {
-  display: inline-flex;
-  margin: 5px 5px;
-  padding: 5px 10px;
-  background-color: #D8D8D8;
-  border-radius: 4px;
-  color: #000;
-  align-items: center;
-}
-.tabs .tab .text {
-  margin-right: 10px;
-  align-items: center;
-}
-.tabs .tab .close-x {
-  display: flex;
-  width: 20px;
-  height: 20px;
-  background-color: #ef5350;
-  color: #FFF;
-  justify-content: center;
-  align-items: center;
-}
-/* canvas {
-  width: 100% !important;
-  height: 100% !important;
-  background-color: #f8f8f8;
-  outline: none;
-} */
-.save-dialog,
-.open-dialog,
-.upload-dialog
-{
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 50px;
-  left: 0;
-  width: 300px;
-  padding: 30px;
-  background-color: #FFF;
-}
-.save-dialog:not(.open),
-.open-dialog:not(.open),
-.upload-dialog:not(.open)
-{
-  display: none;
-}
-.dialog-row {
-  display: flex;
-  align-items: center;
-}
-.dim {
-  color: #CCC;
-}
-a {
-  color: #AAA;
-  text-decoration: none;
-}
-a:hover {
-  color: #42a5f5;
-}
-a:active {
-  color: #1976d2;
-}
-.body > .multibutton {
-  position: absolute;
-  right: 30px;
-  bottom: 30px;
-}
-.multibutton {
-  display: flex;
-}
-.multibutton .button:not(.first) {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.multibutton .button:not(.last) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.button {
-  display: inline-flex;
-  margin-right: 5px;
-  padding: 7px 14px;
-  border: 2px solid;
-  border-radius: 100px;
-  color: #5c6bc0;
-  font-size: 13px;
-  cursor: pointer;
-  outline: none
-}
-/* .button:not(:last-child) {
-  margin-right: 20px;
-} */
-.button:not([disabled]):hover {
-  background-color: #5c6bc0;
-  border-color: #5c6bc0;
-  color: #FFF;
-}
-.button[disabled] {
-  color: #b71c1c;
-  cursor: auto;
-}
-#code-header:not(.open),
-#code-button:not(.open) .opened-text,
-#code-button.open .closed-text
-{
-  display: none;
-}
-.coming-soon {
-  color: #ccc;
-}
-.coming-soon-sub {
-  font-size: 10px;
-  display: block;
-}
-.header-link {
-  color: #666;
-}
-.code-header {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  display: flex;
-  align-items: center;
-  width: 600px;
-  height: 32px;
-  padding: 5px;
-  font-size: 13px;
-  color: #4caf50;
-  background-color: #f2f3f5;
-}
-.code {
-  position: absolute;
-  top: 82px;
-  bottom: 0;
-  right: 0;
-  width: 600px;
-  border: 0;
-  border-left: 5px solid #f2f3f5;
-  outline: none;
-}
-.code:not(.open) {
-  display: none;
-}
-input[type=text] {
-  width: 160px;
-  margin: 0 20px;
-  padding: 7px 14px;
-  background-color: #f2f3f5;
-  border: 0;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-}
 
-/* account.css */
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./exobot.png" type="image/png">
+  <title>Exokit | Store</title>
+  <!-- <meta name="keywords" content="Exokit, WebXR, VR, Cryptocurrency, JavaScript, Metamask, Metaverse">
+  <meta name="description" content="Store WebXR content in a Ethereum blockchain made for the Web.">
+  <meta name="author" content="Exokit"> -->
+</head>
 
-input[type=email],
-input[type=text]
-{
-  margin-right: 10px;
-  padding: 7px 14px;
-  background-color: #f2f3f5;
-  border: 0;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-}
-
-header > .login-form {
-  display: flex;
-  margin-left: auto;
-}
-
-body.logging-in .login-form,
-header > .login-form:not(.phase-1) > .phase-1-content,
-header > .login-form:not(.phase-2) > .phase-2-content,
-header > .login-form:not(.phase-3) > .phase-3-content,
-header > .login-form.phase-1 > .phaseless-content,
-header > .login-form.phase-2 > .phaseless-content,
-header > .login-form.phase-3 > .phaseless-content
-{
-  display: none;
-}
-
-.login-form .phase-content {
-  display: flex;
-  align-items: center;
-}
-.login-form .phase-content .login-error
-{
-  margin-right: 15px;
-  font-weight: 600;
-}
-.login-form .phase-content .user-button {
-  display: flex;
-  height: 30px;
-  margin-right: 10px;
-  padding: 3px 10px;
-  background-color: #f2f3f5;
-  border: 0;
-  border-radius: 8px;
-  align-items: center;
-  cursor: pointer;
-}
-.login-form .phase-content .user-button:hover,
-.login-form .phase-content .user-button.open {
-  background-color: #CCC;
-}
-.login-form .phase-content .user-button > img {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
-}
-.login-form .phase-content .user-button > .name {
-  display: flex;
-  height: 100%;
-  font-weight: 600;
-  align-items: center;
-}
-.login-form .phase-content .login-notice {
-  color: #4caf50;
-}
-.login-form .phase-content .login-error {
-  color: #e53935;
-}
-.login-form .phaseless-content {
-  padding: 0 30px;
-}
-
-.cardContainer {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  margin-top: 50px;
-  flex-wrap: wrap;
-  padding: 20px;
-  background-color: #FFF;
-}
-
-.app-card{
-  width: 400px;
-  height: 250px;
-  padding: 20px;
-  margin: 20px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  border-radius: 5px;
-  text-align: center;
-}
-
-.openSeaBtn{
-  margin-top: 40px;
-}
-
-.cardLink{
-  margin-top: 10px;
-}
-
-#nav-popout{
-  height: 100%;
-  width: 200px;
-  display: none;
-  background-color: white;
-  margin-top: 50px;
-  padding: 20px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  z-index: 2;
-}
-.activeNav{
-  font-weight: 700;
-}
-
-#logo{
-  cursor: pointer;
-}
-
-#metamaskWarning{
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  margin-top: 20vh;
-  display: none;
-}
-
-#metamaskImg{
-  height: 350px;
-}
-    </style>
-    <!-- <script src="three.js"></script>
-    <script src="OrbitControls.js"></script>
-    <script src="Reflector.js"></script>
-    <script src="dist/index.js"></script>
-    <script src="textor/dist/texteditor.js"></script>
-    <script src="textor/dist/javascript.js"></script> -->
-  </head>
-  <body>
-    <div class=body>
-      <header>
-        <img src="logo.svg" class="icon" id="logo">
-        <nav class=selected><span>Store</span></nav>
-        <!-- <a href="https://docs.exokit.org/"><nav><span class="header-link">Documentation</span></nav></a>
-        <a href="https://browser.exokit.org"><nav><span class="header-link">Browser
-        </span></nav></a>
-        <a href="https://discord.gg/UgZDFZW"><nav><span class="coming-soon">Exoland
-          <p class="coming-soon-sub">Coming soon!</p>
-        </span></nav></a> -->
-
-        <form class="login-form phase-1" id=login-form>
-          <div class=phase-content>
-            <div class=login-notice id=login-notice></div>
-            <div class=login-error id=login-error></div>
-          </div>
-          <div class="phase-content phase-1-content">
-            <input type=email placeholder="your@email.com" id=login-email>
-            <input type=submit value="Log in" class="button highlight">
-          </div>
-          <div class="phase-content phase-2-content">
-            <input type=text placeholder="Verification code" id=login-verification-code>
-            <input type=submit value="Verify" class="button highlight">
-          </div>
-          <div class="phase-content phase-3-content">
-            <button class=user-button id=user-button>
-              <img src="exobot.png">
-              <span class=name id=login-email-static>a@modules.io</span>
-            </button>
-            <input type=submit value="Log out" class="button highlight">
-          </div>
-          <div class="phase-content phaseless-content">
-            <div>Working...</div>
-          </div>
-        </form>
-
-        <form class=save-dialog id=save-dialog>
-          <div class=dialog-row>
-            <input type=text placeholder="Enter file name..." id=save-name-input>
-            <span class=dim>.html</span>
-          </div>
-          <input type=submit value="Save">
-        </form>
-        <div class=open-dialog id=open-dialog></div>
-        <form class=upload-dialog id=upload-dialog>
-          <input type=text placeholder="Enter file name..." id=upload-name-input>
-          <input type=submit value="Upload">
-        </form>
-      </header>
-
-      <div id="nav-popout"> 
-
+<body>
+  <header>
+    <img src="logo.svg" class="icon grow" id="logo">
+    <nav class="selected">
+      <span>Store</span>
+    </nav>
+    <form class="login-form phase-1" id="login-form">
+      <div class="phase-content">
+        <div class="login-notice" id="login-notice"></div>
+        <div class="login-error" id="login-error"></div>
       </div>
-
-      <div class="cardContainer" id="cardContainer">
-
+      <div class="phase-content phase-1-content">
+        <input type="email" placeholder="your@email.com" id="login-email">
+        <input type="submit" value="Log in" class="button highlight">
       </div>
-
-      <div id="metamaskWarning">
-        <img id="metamaskImg" src="./metamask.png">
-        <h3><a href="https://metamask.io/" target="_blank">Metamask Extension</a> required to use Exokit Store.</h3>
+      <div class="phase-content phase-2-content">
+        <input type="text" placeholder="Verification code" id="login-verification-code">
+        <input type="submit" value="Verify" class="button highlight">
       </div>
-
-      <div class=multibutton>
-        <a class="button first last" id="enter-xr-button" style="display: none;">Enter XR</a>
-        <a class="button first last" id="no-xr-button" disabled style="display: none;">No XR</a>
+      <div class="phase-content phase-3-content">
+        <button class="user-button" id="user-button">
+          <img src="exobot.png">
+          <span class="name" id="login-email-static">a@modules.io</span>
+        </button>
+        <input type="submit" value="Log out" class="button highlight">
       </div>
-    </div>
-    <script>
-(async () => {
+      <div class="phase-content phaseless-content">
+        <div>Working...</div>
+      </div>
+    </form>
+  </header>
 
-  const metamaskWarning = document.getElementById("metamaskWarning");
+  <div id="nav-popout" tabindex="1"></div>
 
-  const contract = await new Promise((accept, reject) => {
-    window.addEventListener('load', async () => {
+  <div class="cardContainer" id="cardContainer"></div>
 
-      const accessContract = async (web3) => {
-        window.web3 = web3;
-        const ress = await Promise.all([
-          fetch('abi.json'),
-          fetch('address.json'),
-        ]);
-        const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-        return web3.eth.contract(jsonInterface).at(address);
-      }
+  <div id="metamaskWarning">
+    <img id="metamaskImg" src="./metamask.png">
+    <h3><a href="https://metamask.io/" target="_blank">Metamask Extension</a> required to use Exokit Store.</h3>
+  </div>
 
-      // Modern dapp browsers...
-      if (window.ethereum) {
-          try {
-            // Request account access if needed
-            await window.ethereum.enable();
-            const contract = await accessContract(new window.top.Web3(ethereum))
-            accept(contract);
+  <script>
+    (async () => {
 
-          } catch (error) {
+      const metamaskWarning = document.getElementById("metamaskWarning");
+
+      const contract = await new Promise((accept, reject) => {
+        window.addEventListener('load', async () => {
+
+          const accessContract = async (web3) => {
+            window.web3 = web3;
+            const ress = await Promise.all([
+              fetch('abi.json'),
+              fetch('address.json'),
+            ]);
+            const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+            return web3.eth.contract(jsonInterface).at(address);
+          }
+
+          // Modern dapp browsers...
+          if (window.ethereum) {
+            try {
+              // Request account access if needed
+              await window.ethereum.enable();
+              const contract = await accessContract(new window.top.Web3(ethereum))
+              accept(contract);
+
+            } catch (error) {
               metamaskWarning.style.display = "block";
               console.warn("User denied access to Metamask account.")
+            }
           }
-      }
-      // Legacy dapp browsers...
-      else if (window.web3) {
-        const contract = await accessContract(new window.Web3(window.web3.currentProvider))
-        accept(contract);
-      }
-      // Non-dapp browsers...
-      else {
-        metamaskWarning.style.display = "block";
-        console.warn('Non-Ethereum browser detected. You should consider trying MetaMask!');
-      }
-    });
-  });
+          // Legacy dapp browsers...
+          else if (window.web3) {
+            const contract = await accessContract(new window.Web3(window.web3.currentProvider))
+            accept(contract);
+          }
+          // Non-dapp browsers...
+          else {
+            metamaskWarning.style.display = "block";
+            console.warn('Non-Ethereum browser detected. You should consider trying MetaMask!');
+          }
+        });
+      });
 
-  const res = await fetch(`https://content.exokit.org/users/avaer`);
-  const root = await res.json();
+      const res = await fetch(`https://content.exokit.org/users/avaer`);
+      const root = await res.json();
 
-  const files = [];
-  const hashes = [];
-  let keypath = '';
-  const _recurse = node => {
-    keypath += (keypath ? '/' : '') + node.name;
+      const files = [];
+      const hashes = [];
+      let keypath = '';
+      const _recurse = node => {
+        keypath += (keypath ? '/' : '') + node.name;
 
-    if (node.hash) {
-      files.push(keypath);
-      hashes.push('0x' + node.hash);
-    }
-    if (node.children) {
-      for (let i = 0; i < node.children.length; i++) {
-        _recurse(node.children[i]);
-      }
-    }
-  };
-  _recurse(root);
-  const ids = await Promise.all(hashes.map(hash => new Promise((accept, reject) => {
-    // const hash = '0x' + filename.match(/([^\/]*)$/)[1];
-    contract.getId(hash, (err, id) => {
-      if (!err) {
-        accept(id.toNumber());
-      } else {
-        reject(err);
-      }
-    });
-  })));
+        if (node.hash) {
+          files.push(keypath);
+          hashes.push('0x' + node.hash);
+        }
+        if (node.children) {
+          for (let i = 0; i < node.children.length; i++) {
+            _recurse(node.children[i]);
+          }
+        }
+      };
+      _recurse(root);
+      const ids = await Promise.all(hashes.map(hash => new Promise((accept, reject) => {
+        // const hash = '0x' + filename.match(/([^\/]*)$/)[1];
+        contract.getId(hash, (err, id) => {
+          if (!err) {
+            accept(id.toNumber());
+          } else {
+            reject(err);
+          }
+        });
+      })));
 
-  const navLinks = [
-    {
-      url: "https://store.exokit.org/",
-      title: "Store",
-      active: window.location.host.split(".")[0] === "store"
-    },
-    {
-      url: "https://avatars.exokit.org/",
-      title: "Avatars",
-      active: window.location.host.split(".")[0] === "avatars"
-    },
-    {
-      url: "https://multiplayer.exokit.org/",
-      title: "Multiplayer",
-      active: window.location.host.split(".")[0] === "multiplayer"
-    },
-    {
-      url: "https://editor.exokit.org/",
-      title: "Editor",
-      active: window.location.host.split(".")[0] === "editor"
-    },
-    {
-      url: "https://exokit.org/",
-      title: "Home",
-      active: window.location.host.split(".")[0] === "exokit"
-    }
-  ]
+      // Define links for popout-nav
+      const navLinks = [
+        {
+          url: "https://store.exokit.org/",
+          title: "Store",
+          active: window.location.host.split(".")[0] === "store"
+        },
+        {
+          url: "https://avatars.exokit.org/",
+          title: "Avatars",
+          active: window.location.host.split(".")[0] === "avatars"
+        },
+        {
+          url: "https://multiplayer.exokit.org/",
+          title: "Multiplayer",
+          active: window.location.host.split(".")[0] === "multiplayer"
+        },
+        {
+          url: "https://editor.exokit.org/",
+          title: "Editor",
+          active: window.location.host.split(".")[0] === "editor"
+        },
+        {
+          url: "https://exokit.org/",
+          title: "Home",
+          active: window.location.host.split(".")[0] === "exokit"
+        }
+      ]
 
-  document.getElementById('nav-popout').innerHTML = navLinks.map((link, index) => {
-    return `
-      <div>
-        <a href=${link.url} class=${link.active ? "activeNav" : ""}>${link.title}</a>
-      </div>
-    `
-  }).join(`<br/>`)
+      // Populate nav-popout with links
+      document.getElementById('nav-popout').innerHTML = navLinks.map((link, index) => {
+        return `
+          <div>
+            <a href=${link.url} class=${link.active ? "activeNav" : ""}>${link.title}</a>
+          </div>
+        `
+      }).join(`<br/>`)
 
-  document.getElementById("logo").addEventListener("click", () => {
-    const navPopout = document.getElementById('nav-popout');
-    if(navPopout.style.display === "block"){
-      navPopout.style.display = "none";
-    }
-    else{
-      navPopout.style.display = "block";
-    }
-  })
+      // Close nav-popout if user clicks away
+      document.getElementById("nav-popout").addEventListener("blur", (e) => {
+        const navPopout = document.getElementById('nav-popout');
+        // wait for <a> to fire
+        setTimeout(() => {
+          navPopout.style.display = "none"
+        }, 100)
+      })
 
-  document.getElementById('cardContainer').innerHTML = files.map((file, i) => {
-    const rawHash = hashes[i].slice(2);
-    const id = ids[i];
-    return `
-      <div class="app-card">
-        <img src="https://content.exokit.org/preview/${rawHash}" height=100>
-        <div class="cardLink">
-          <a href="https://viewer.exokit.org/${rawHash}">${file}</a>
-        </div>
-        <div class="openSeaBtn">
-          <a href="https://rinkeby.opensea.io/assets/${contract.address}/${id}" class="button first last external-link-button">OpenSea</a>
-        </div>
-      </div>
-    `
-  }).join('\n');
-})();
-    </script>
-  </body>
+      // Handle logo click, open nav-popout
+      document.getElementById("logo").addEventListener("click", (e) => {
+        const navPopout = document.getElementById('nav-popout');
+        if (document.activeElement == navPopout) {
+          navPopout.blur()
+        }
+        else {
+          navPopout.style.display = "block";
+          navPopout.focus()
+        }
+      })
+
+      document.getElementById("logo").addEventListener("mousedown", (e) => {
+        e.preventDefault()
+      })
+
+      // Populate cardContainer with cards
+      document.getElementById('cardContainer').innerHTML = files.map((file, i) => {
+        const rawHash = hashes[i].slice(2);
+        const id = ids[i];
+        return `
+          <div class="app-card">
+            <img src="https://content.exokit.org/preview/${rawHash}" height=100>
+            <div class="cardLink">
+              <a href="https://viewer.exokit.org/${rawHash}">${file}</a>
+            </div>
+            <div class="openSeaBtn">
+              <a href="https://rinkeby.opensea.io/assets/${contract.address}/${id}" class="button first last external-link-button">OpenSea</a>
+            </div>
+          </div>
+        `
+      }).join('\n');
+
+    })();
+
+  </script>
+</body>
+
 </html>
