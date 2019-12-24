@@ -1,0 +1,247 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+}
+
+header {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 50px;
+    background-color: #FFF;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    align-items: center;
+    user-select: none;
+    z-index: 2;
+}
+
+header .icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 20px;
+}
+
+header nav {
+    display: flex;
+    height: 100%;
+    padding: 0 10px;
+    letter-spacing: 0.9px;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+header nav span {
+    display: flex;
+    height: 30px;
+    padding: 10px;
+    border-radius: 4px;
+    align-items: center;
+}
+
+header nav.selected span {
+    background-color: #5c6bc0;
+    color: #FFF;
+    cursor: default;
+}
+
+header nav:not(.selected):hover {
+    cursor: pointer;
+}
+
+header nav:not(.selected):hover span {
+    background-color: #EEE;
+}
+
+h1, h2, h3, h4, h5, h6, p, .examples>.multibutton {
+    margin: 15px 0;
+    padding: 0 20px;
+    font-weight: inherit;
+}
+
+a {
+    color: #AAA;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #42a5f5;
+}
+
+a:active {
+    color: #1976d2;
+}
+
+.button {
+    display: inline-flex;
+    margin-right: 5px;
+    padding: 7px 14px;
+    border: 2px solid;
+    border-radius: 100px;
+    color: #5c6bc0;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none
+}
+
+.button:not([disabled]):hover {
+    background-color: #5c6bc0;
+    border-color: #5c6bc0;
+    color: #FFF;
+}
+
+.button[disabled] {
+    color: #b71c1c;
+    cursor: auto;
+}
+
+input[type=text] {
+    width: 160px;
+    margin: 0 20px;
+    padding: 7px 14px;
+    background-color: #f2f3f5;
+    border: 0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+}
+
+/* account.css */
+
+input[type=email], input[type=text] {
+    margin-right: 10px;
+    padding: 7px 14px;
+    background-color: #f2f3f5;
+    border: 0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+}
+
+header>.login-form {
+    display: flex;
+    margin-left: auto;
+}
+
+body.logging-in .login-form, header>.login-form:not(.phase-1)>.phase-1-content, header>.login-form:not(.phase-2)>.phase-2-content, header>.login-form:not(.phase-3)>.phase-3-content, header>.login-form.phase-1>.phaseless-content, header>.login-form.phase-2>.phaseless-content, header>.login-form.phase-3>.phaseless-content {
+    display: none;
+}
+
+.login-form .phase-content {
+    display: flex;
+    align-items: center;
+}
+
+.login-form .phase-content .login-error {
+    margin-right: 15px;
+    font-weight: 600;
+}
+
+.login-form .phase-content .user-button {
+    display: flex;
+    height: 30px;
+    margin-right: 10px;
+    padding: 3px 10px;
+    background-color: #f2f3f5;
+    border: 0;
+    border-radius: 8px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.login-form .phase-content .user-button:hover, .login-form .phase-content .user-button.open {
+    background-color: #CCC;
+}
+
+.login-form .phase-content .user-button>img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.login-form .phase-content .user-button>.name {
+    display: flex;
+    height: 100%;
+    font-weight: 600;
+    align-items: center;
+}
+
+.login-form .phase-content .login-notice {
+    color: #4caf50;
+}
+
+.login-form .phase-content .login-error {
+    color: #e53935;
+}
+
+.login-form .phaseless-content {
+    padding: 0 30px;
+}
+
+.cardContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 50px;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: #FFF;
+}
+
+.app-card {
+    width: 400px;
+    height: 250px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    text-align: center;
+}
+
+.openSeaBtn {
+    margin-top: 40px;
+}
+
+.cardLink {
+    margin-top: 10px;
+}
+
+#nav-popout {
+    height: 100%;
+    width: 200px;
+    display: none;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    padding-top: 70px;
+    outline: none;
+}
+
+.activeNav {
+    font-weight: 700;
+}
+
+#logo {
+    cursor: pointer;
+}
+
+.grow { 
+    transition: all .2s ease-in-out; 
+}
+.grow:hover { 
+    transform: scale(1.1);
+}
+
