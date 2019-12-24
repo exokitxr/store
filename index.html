@@ -4,6 +4,8 @@
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./exobot.png" type="image/png">
+  <title>Exokit | Store</title>
   <!-- <meta name="keywords" content="Exokit, WebXR, VR, Cryptocurrency, JavaScript, Metamask, Metaverse">
   <meta name="description" content="Store WebXR content in a Ethereum blockchain made for the Web.">
   <meta name="author" content="Exokit"> -->
@@ -41,7 +43,7 @@
     </form>
   </header>
 
-  <div id="nav-popout"></div>
+  <div id="nav-popout" tabindex="1"></div>
 
   <div class="cardContainer" id="cardContainer"></div>
 
@@ -152,22 +154,25 @@
       }).join(`<br/>`)
 
       // Close nav-popout if user clicks away
-      document.addEventListener("click", (e) => {
+      document.getElementById("nav-popout").addEventListener("blur", (e) => {
         const navPopout = document.getElementById('nav-popout');
-        if(e.target.id !== "nav-popout" && e.target.id !== "logo" && navPopout.style.display !== "none"){
-          navPopout.style.display = "none"
-        }
+        navPopout.style.display = "none"
       })
 
       // Handle logo click, open nav-popout
-      document.getElementById("logo").addEventListener("click", () => {
+      document.getElementById("logo").addEventListener("click", (e) => {
         const navPopout = document.getElementById('nav-popout');
-        if (navPopout.style.display === "block") {
-          navPopout.style.display = "none";
+        if(document.activeElement == navPopout){
+          navPopout.blur()
         }
-        else {
+        else{
           navPopout.style.display = "block";
+          navPopout.focus()
         }
+      })
+
+      document.getElementById("logo").addEventListener("mousedown", (e) => {
+        e.preventDefault()
       })
       
       // Populate cardContainer with cards

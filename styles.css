@@ -20,7 +20,7 @@ header {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     align-items: center;
     user-select: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 header .icon {
@@ -223,8 +223,11 @@ body.logging-in .login-form, header>.login-form:not(.phase-1)>.phase-1-content, 
     background-color: white;
     padding: 20px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    z-index: 2;
+    z-index: 1;
     position: absolute;
+    top: 0;
+    padding-top: 70px;
+    outline: none;
 }
 
 .activeNav {
