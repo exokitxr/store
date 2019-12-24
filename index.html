@@ -58,6 +58,7 @@
       const metamaskWarning = document.getElementById("metamaskWarning");
 
       const contract = await new Promise((accept, reject) => {
+
         window.addEventListener('load', async () => {
 
           const accessContract = async (web3) => {
@@ -70,28 +71,34 @@
             return web3.eth.contract(jsonInterface).at(address);
           }
 
+          let contract = null;
+
           // Modern dapp browsers...
           if (window.ethereum) {
             try {
               // Request account access if needed
               await window.ethereum.enable();
-              const contract = await accessContract(new window.top.Web3(ethereum))
-              accept(contract);
+              contract = await accessContract(new window.top.Web3(ethereum))
 
             } catch (error) {
-              metamaskWarning.style.display = "block";
-              console.warn("User denied access to Metamask account.")
+                metamaskWarning.style.display = "block";
+                console.warn("User denied access to Metamask account.")
             }
           }
           // Legacy dapp browsers...
           else if (window.web3) {
-            const contract = await accessContract(new window.Web3(window.web3.currentProvider))
-            accept(contract);
+            contract = await accessContract(new window.Web3(window.web3.currentProvider))
           }
           // Non-dapp browsers...
           else {
             metamaskWarning.style.display = "block";
-            console.warn('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            console.warn("Non-Ethereum browser detected. You should consider trying MetaMask!")
+          }
+          if(contract){
+            accept(contract)
+          }
+          else{
+            reject(new Error("No contract"))
           }
         });
       });

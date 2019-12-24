@@ -250,7 +250,7 @@ body.logging-in .login-form, header>.login-form:not(.phase-1)>.phase-1-content, 
     position: absolute;
     width: 100%;
     text-align: center;
-    margin-top: 20vh;
+    margin-top: 15vh;
     display: none;
 }
 
