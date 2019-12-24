@@ -47,40 +47,59 @@
 
   <div class="cardContainer" id="cardContainer"></div>
 
+  <div id="metamaskWarning">
+    <img id="metamaskImg" src="./metamask.png">
+    <h3><a href="https://metamask.io/" target="_blank">Metamask Extension</a> required to use Exokit Store.</h3>
+  </div>
+
   <script>
     (async () => {
+
+      const metamaskWarning = document.getElementById("metamaskWarning");
+
       const contract = await new Promise((accept, reject) => {
+
         window.addEventListener('load', async () => {
+
+          const accessContract = async (web3) => {
+            window.web3 = web3;
+            const ress = await Promise.all([
+              fetch('abi.json'),
+              fetch('address.json'),
+            ]);
+            const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
+            return web3.eth.contract(jsonInterface).at(address);
+          }
+
+          let contract = null;
+
           // Modern dapp browsers...
           if (window.ethereum) {
-            window.web3 = new window.top.Web3(ethereum);
             try {
               // Request account access if needed
               await window.ethereum.enable();
-              // Acccounts now exposed
-              // web3.eth.sendTransaction({/* ... */});
+              contract = await accessContract(new window.top.Web3(ethereum))
+
             } catch (error) {
-              // User denied account access...
+                metamaskWarning.style.display = "block";
+                console.warn("User denied access to Metamask account.")
             }
           }
           // Legacy dapp browsers...
           else if (window.web3) {
-            window.web3 = new window.Web3(window.web3.currentProvider);
-            // Acccounts always exposed
-            // web3.eth.sendTransaction({/* ... */});
+            contract = await accessContract(new window.Web3(window.web3.currentProvider))
           }
           // Non-dapp browsers...
           else {
-            console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            metamaskWarning.style.display = "block";
+            console.warn("Non-Ethereum browser detected. You should consider trying MetaMask!")
           }
-
-          const ress = await Promise.all([
-            fetch('abi.json'),
-            fetch('address.json'),
-          ]);
-          const [jsonInterface, address] = await Promise.all(ress.map(res => res.json()));
-          const contract = web3.eth.contract(jsonInterface).at(address);
-          accept(contract);
+          if(contract){
+            accept(contract)
+          }
+          else{
+            reject(new Error("No contract"))
+          }
         });
       });
 
@@ -165,10 +184,10 @@
       // Handle logo click, open nav-popout
       document.getElementById("logo").addEventListener("click", (e) => {
         const navPopout = document.getElementById('nav-popout');
-        if(document.activeElement == navPopout){
+        if (document.activeElement === navPopout) {
           navPopout.blur()
         }
-        else{
+        else {
           navPopout.style.display = "block";
           navPopout.focus()
         }
@@ -177,7 +196,7 @@
       document.getElementById("logo").addEventListener("mousedown", (e) => {
         e.preventDefault()
       })
-      
+
       // Populate cardContainer with cards
       document.getElementById('cardContainer').innerHTML = files.map((file, i) => {
         const rawHash = hashes[i].slice(2);
@@ -199,4 +218,5 @@
 
   </script>
 </body>
+
 </html>
