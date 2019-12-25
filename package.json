@@ -1,7 +1,7 @@
 {
-  "name": "exokit-multiplayer",
+  "name": "exokit-store",
   "version": "0.0.1",
-  "description": "Exokit Multiplayer",
+  "description": "Exokit Store",
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1"
