@@ -1,3 +1,16 @@
+/*  
+
+Exokit Common CSS Styles
+
+Color Pallete:
+
+#5c6bc0 - Exokit Blue
+#42a5f5 - Link Color
+
+*/
+
+/* General Styling */
+
 * {
     box-sizing: border-box;
 }
@@ -8,6 +21,35 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     font-size: 15px;
 }
+
+a {
+    color: #AAA;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #42a5f5;
+}
+
+a:active {
+    color: #1976d2;
+}
+
+h1, h2, h3, h4, h5, h6, p, .examples>.multibutton {
+    margin: 15px 0;
+    padding: 0 20px;
+    font-weight: inherit;
+}
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.1);
+}
+
+/* Top header  */
 
 header {
     position: absolute;
@@ -59,62 +101,6 @@ header nav:not(.selected):hover {
 header nav:not(.selected):hover span {
     background-color: #EEE;
 }
-
-h1, h2, h3, h4, h5, h6, p, .examples>.multibutton {
-    margin: 15px 0;
-    padding: 0 20px;
-    font-weight: inherit;
-}
-
-a {
-    color: #AAA;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #42a5f5;
-}
-
-a:active {
-    color: #1976d2;
-}
-
-.button {
-    display: inline-flex;
-    margin-right: 5px;
-    padding: 7px 14px;
-    border: 2px solid;
-    border-radius: 100px;
-    color: #5c6bc0;
-    font-size: 13px;
-    cursor: pointer;
-    outline: none
-}
-
-.button:not([disabled]):hover {
-    background-color: #5c6bc0;
-    border-color: #5c6bc0;
-    color: #FFF;
-}
-
-.button[disabled] {
-    color: #b71c1c;
-    cursor: auto;
-}
-
-input[type=text] {
-    width: 160px;
-    margin: 0 20px;
-    padding: 7px 14px;
-    background-color: #f2f3f5;
-    border: 0;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: inherit;
-    outline: none;
-}
-
-/* account.css */
 
 input[type=email], input[type=text] {
     margin-right: 10px;
@@ -187,34 +173,7 @@ body.logging-in .login-form, header>.login-form:not(.phase-1)>.phase-1-content, 
     padding: 0 30px;
 }
 
-.cardContainer {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    margin-top: 50px;
-    flex-wrap: wrap;
-    padding: 20px;
-    background-color: #FFF;
-}
-
-.app-card {
-    width: 400px;
-    height: 250px;
-    padding: 20px;
-    margin: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    text-align: center;
-}
-
-.openSeaBtn {
-    margin-top: 40px;
-}
-
-.cardLink {
-    margin-top: 10px;
-}
+/* Nav popout */
 
 #nav-popout {
     height: 100%;
@@ -238,22 +197,41 @@ body.logging-in .login-form, header>.login-form:not(.phase-1)>.phase-1-content, 
     cursor: pointer;
 }
 
-.grow {
-    transition: all .2s ease-in-out;
+/* Buttons */
+
+.button {
+    display: inline-flex;
+    margin-right: 5px;
+    padding: 7px 14px;
+    border: 2px solid;
+    border-radius: 100px;
+    color: #5c6bc0;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none
 }
 
-.grow:hover {
-    transform: scale(1.1);
+.button:not([disabled]):hover {
+    background-color: #5c6bc0;
+    border-color: #5c6bc0;
+    color: #FFF;
 }
 
-#metamaskWarning {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    margin-top: 15vh;
-    display: none;
+.button[disabled] {
+    color: #b71c1c;
+    cursor: auto;
 }
 
-#metamaskImg {
-    height: 350px;
+/* Inputs */
+
+input[type=text] {
+    width: 160px;
+    margin: 0 20px;
+    padding: 7px 14px;
+    background-color: #f2f3f5;
+    border: 0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
 }
