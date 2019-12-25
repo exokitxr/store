@@ -1,8 +1,25 @@
-import {sendVerifyCode, verifyCode} from './common.js'
+import {sendVerifyCode, verifyCode, loginUser} from './common.js'
 
 (async () => {
 
     const metamaskWarning = document.getElementById("metamaskWarning");
+
+    let userData = null;
+
+    // Auto login event
+    window.addEventListener("load", async () => {
+        const localData = JSON.parse(localStorage.getItem("userData"))
+        if(localData){
+            const loginForm = document.getElementById("login-form")
+            const newUserData = await loginUser(localData.email, localData.token)
+            if(newUserData){
+                userData = newUserData
+                loginForm.classList.replace("phase-1", "phase-3")
+                document.getElementById("login-email-static").innerText = userData.email
+                localStorage.setItem("userData", JSON.stringify(newUserData))
+            }
+        }
+    })
 
     const contract = await new Promise((accept, reject) => {
 
@@ -164,7 +181,6 @@ import {sendVerifyCode, verifyCode} from './common.js'
 
     // Login and Verify stuff
 
-    let userData = null;
     let email = "";
     let verificationCode = ""
 
@@ -191,12 +207,18 @@ import {sendVerifyCode, verifyCode} from './common.js'
                 if(userData){
                     document.getElementById("login-email-static").innerText = userData.email
                     loginForm.classList.replace("phase-2", "phase-3")
-                    localStorage.setItem("token", userData.token)
+                    localStorage.setItem("userData", JSON.stringify(userData))
                 }
                 break;
             default:
                 break;
         }
+    })
+
+    document.getElementById("logout").addEventListener("click", (e) => {
+        userData = null;
+        localStorage.removeItem("userData")
+        window.location.reload();
     })
 
 })();

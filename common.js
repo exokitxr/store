@@ -40,16 +40,18 @@ export const verifyCode = (email, verificationCode) => {
 }
 
 // Login user, returns userData.
-export const loginUser = () => {
-    return new Promise(async (accept, reject) => {
+export const loginUser = (email, token) => {
+    const url = `https://login.exokit.org/?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`
+    return new Promise(async (accept, reject)  => {
         try {
-            const response = await fetch("URL", {
-
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors'
             })
-            if (response) {
+            if (response.ok) {
                 const json = await response.json()
+                accept(json)
             }
-            accept()
         }
         catch (e) {
             console.error(e)
