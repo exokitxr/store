@@ -1,14 +1,36 @@
-// Verify user's code, returns boolean.
-export const verifyUser = () => {
-    return new Promise((accept, reject), async () => {
+// Send verifcation email, returns if successful.
+export const sendVerifyCode = (email) => {
+    const url = `https://login.exokit.org/?email=${encodeURIComponent(email)}`
+    return new Promise(async (accept, reject)  => {
         try {
-            const response = await fetch("URL", {
-
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors'
             })
-            if (response) {
-                const json = await response.json()
+            if (response.ok) {
+                accept(true)
             }
-            accept()
+        }
+        catch (e) {
+            console.error(e)
+            reject(e)
+        }
+    })
+}
+
+// Verify user's code, returns userData and token.
+export const verifyCode = (email, verificationCode) => {
+    const url = `https://login.exokit.org/?email=${encodeURIComponent(email)}&code=${encodeURIComponent(verificationCode)}`
+    return new Promise(async (accept, reject)  => {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors'
+            })
+            if (response.ok) {
+                const json = await response.json()
+                accept(json)
+            }
         }
         catch (e) {
             console.error(e)
@@ -18,16 +40,18 @@ export const verifyUser = () => {
 }
 
 // Login user, returns userData.
-export const loginUser = () => {
-    return new Promise((accept, reject), async () => {
+export const loginUser = (email, token) => {
+    const url = `https://login.exokit.org/?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`
+    return new Promise(async (accept, reject)  => {
         try {
-            const response = await fetch("URL", {
-
+            const response = await fetch(url, {
+                method: 'POST',
+                mode: 'cors'
             })
-            if (response) {
+            if (response.ok) {
                 const json = await response.json()
+                accept(json)
             }
-            accept()
         }
         catch (e) {
             console.error(e)

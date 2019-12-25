@@ -1,8 +1,25 @@
-import {verifyUser, loginUser} from './common.js'
+import {sendVerifyCode, verifyCode, loginUser} from './common.js'
 
 (async () => {
 
     const metamaskWarning = document.getElementById("metamaskWarning");
+
+    let userData = null;
+
+    // Auto login event
+    window.addEventListener("load", async () => {
+        const localData = JSON.parse(localStorage.getItem("userData"))
+        if(localData){
+            const loginForm = document.getElementById("login-form")
+            const newUserData = await loginUser(localData.email, localData.token)
+            if(newUserData){
+                userData = newUserData
+                loginForm.classList.replace("phase-1", "phase-3")
+                document.getElementById("login-email-static").innerText = userData.email
+                localStorage.setItem("userData", JSON.stringify(newUserData))
+            }
+        }
+    })
 
     const contract = await new Promise((accept, reject) => {
 
@@ -160,5 +177,48 @@ import {verifyUser, loginUser} from './common.js'
         </div>
       `
     }).join('\n');
+
+
+    // Login and Verify stuff
+
+    let email = "";
+    let verificationCode = ""
+
+    document.getElementById("login-email").addEventListener("change", (e) => {
+        email = e.target.value;
+    })
+
+    document.getElementById("login-verification-code").addEventListener("change", (e) => {
+        verificationCode = e.target.value;
+    })
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const loginForm = document.getElementById("login-form")
+        const formPhase = e.target.classList[1]
+        switch (formPhase){
+            case "phase-1":
+                if(await sendVerifyCode(email)){
+                    loginForm.classList.replace("phase-1", "phase-2")
+                }
+                break;
+            case "phase-2":
+                userData = await verifyCode(email, verificationCode);
+                if(userData){
+                    document.getElementById("login-email-static").innerText = userData.email
+                    loginForm.classList.replace("phase-2", "phase-3")
+                    localStorage.setItem("userData", JSON.stringify(userData))
+                }
+                break;
+            default:
+                break;
+        }
+    })
+
+    document.getElementById("logout").addEventListener("click", (e) => {
+        userData = null;
+        localStorage.removeItem("userData")
+        window.location.reload();
+    })
 
 })();
